@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="mt-3">
+  <div class="row flex-column-reverse flex-md-row">
+
+    <div class="col-sm-12 col-md-8">
+      <div class="box">
+        <div class="card content-style">
+          <div class="card-body">
+              <form action="{{url_for('update_appointment', app_id=appointment._id, user_id = user_id)}}"
+                method="POST">
+
+                  <!-- Confirm the name of the department from the name of available departments -->
+
+                    <div class="form-group">
+                      <i class="far fa-address-book prefix"></i>
+                      <label for="dept_name">Department Name :</label>
+                      <select id="departments" name="dept_name" class="form-control">
+                        <option value="" class="dept" disabled selected>Choose a department</option>
+                        {% for dept in departments %}
+                        {% if dept.dept_name == appointment.dept_name %}
+                        <option value="{{ dept.dept_name }}" selected>{{ dept.dept_name }}</option>
+                        {% else %}
+                        <option value="{{ dept.dept_name }}">{{ dept.dept_name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                  <!-- Confirm the name of the service from the list of available services -->
+
+                    <div class="form-group">
+                      <i class="fas fa-cogs prefix"></i> Service
+                      <select id="service" name="service" class="form-control">
+                        <option id="service" value="{{ appointment.service }}" selected>{{ appointment.service }}</option>
+                      </select>
+                    </div>
+
+                  <!-- Edit task name -->
+
+                    <div class="form-group">
+                      <i class="far fa-address-card"></i> Appointment Name
+                      <input id="task_name" name="task_name" type="text" class="form-control" placeholder="Patient's name"
+                        value="{{ appointment.task_name }}">
+                    </div>
+
+                  <!-- Edit task description name -->
+
+                    <div class="form-group">
+                      <i class="fas fa-pencil-alt"></i> Appointment Description
+                      <textarea name="task_description" id="task_description" class="form-control" type="text"
+                        placeholder="Add appointment description here" data-toggle="tooltip" data-placement="top" title="Give a brief description please"
+                        required>{{ appointment.task_description }}</textarea>
+                    </div>
+
+                  <!-- Edit employee name -->
+
+                    <div class="form-group">
+                      <i class="far fa-user-circle"></i> Created By
+                      <input  id="user_name" name="user_name" type="text" class="form-control" placeholder="Add your name here"
+                        value="{{ session.user }}" data-toggle="tooltip" data-placement="top" title="Your name is automatically added here"
+                        required />
+                    </div>
+
+                  <!-- Edit Date/Time Picker -->
+
+                    
+                      <i class="far fa-clock"></i> Appointment Date/Time
+                      <div class="form-group">
+                        <div class="input-group date col-6" id="datetimepicker" data-target-input="nearest">
+                          <input name="date_time" id="date_time" type="text" class="form-control datetimepicker-input"
+                            value="{{ appointment.date_time }}" data-target="#datetimepicker" placeholder="{{ appointment.date_time }}"
+                            required />
+                          <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                    
+                    
+
+                  <!-- Edit Task Urgency Selector -->
+
+                  <div class="row">
+                    <div class="col-md-2">
+                      <div class="custom-control custom-switch">
+                        {% if appointment.is_urgent %}
+                        <input name="is_urgent" type="checkbox" class="custom-control-input" id="customSwitch1">
+                        {% else %}
+                        <input name="is_urgent" type="checkbox" class="custom-control-input" id="customSwitch1">
+                        {% endif %}
+                        <label label class="custom-control-label" for="customSwitch1"> Urgent </label>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="custom-control custom-switch">
+                        {% if appointment.is_archived %}
+                        <input name="is_archived" type="checkbox" class="custom-control-input" id="customSwitch2">
+                        {% else %}
+                        <input name="is_archived" type="checkbox" class="custom-control-input" id="customSwitch2">
+                        {% endif %}
+                        <label label class="custom-control-label" for="customSwitch2"> Done </label>
+
+                      </div>
+                    </div>                    
+                    <div class="col-md-8 text-right">
+                      <a href="{{url_for('delete_appointment',  app_id=appointment._id, user_id = user_id)}}" class="btn btn-danger btn-md confirm-delete">Delete
+                        </span></a>
+                      <a href="{{url_for('get_appointment')}}" class="btn btn-dark btn-md btn-fixed mx-3">Cancel</a>
+                      <button class="btn btn-success btn-md" type="submit" name="action">Save</button>
+                    </div>
+                  </div>
+
+                  <!-- Task Archived Selector -->
+
+              </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-12 col-md-4 flex-first mb-sm-3">
+      <div class="card">
+        <h2 class="card-header">{{ page_title }}
+          <i class="far fa-calendar-check fa-inverse"></i>
+        </h2>
+        <div class="card-body">
+          <p>To update an appointment, you may change the details here.</p>
+          <p>Note that if you change somone elses appointment, you will become the new crator of the appointment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

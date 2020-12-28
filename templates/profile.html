@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block page_title %}
+{{ page_title }}
+{% endblock page_title %}
+
+
+{% block content %}
+
+<div class="card content-style">
+    <div class="box">
+    
+
+
+        <form action="{{url_for('update_profile', username=username, user_id=user_id)}}" method="POST">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class"text-centre">{{ login_user.username }}'s Profile Page</h2>
+                    <h5><span class="fa-urgent"><i class="fas fa-heart"></i></span> Favourite Departments</h5>
+                </div>
+            </div>
+            <div class="row mb-5">
+
+            {% if favourites is defined %}
+
+                {% for x in favourites %}                
+                                          
+                    <div class="col-sm-12 col-md-4">
+                        <div class="box">                            
+                                <a href="{{url_for('department', dept_id = x._id, user_id = user_id)}}">
+                                    <img class="card-img-top img" src="{{ x.img_url }}" alt="{{ x.dept_name }}">
+                                </a>       
+                            </div>                            
+                    </div>  
+                    
+                    <div class="col-sm-8 col-md-8">
+                        <div class="row">
+                                <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input"  id="list_service{{ loop.index }}" name="favourites"
+                                                            type="checkbox" value="{{ x._id }}" checked />
+                                <label class="custom-control-label" for="list_service{{ loop.index }}">Deselect to remove favourite</label>
+
+                                </div>
+                                <ul class="list-group">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <li class="list-group-item"><i class="far fa-address-book prefix"></i><span> Department:</span> {{x.dept_name }}</li>
+
+                            </div>
+                            <div class="col-sm-12 col-md-6"">
+                                <li class="list-group-item"><i class="far fa-user-circle"></i><span> Created by:</span> {{ x.dept_owner }}</li>
+                            </div>                          
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <li class="list-group-item"><i class="far fa-building prefix"></i><span> Facility:</span>  {{x.site[0].location }}</li>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6"">
+                                <li class="list-group-item"><i class="fas fa-mobile-alt"></i><span> Contact:</span>  {{ x.site[0].phone }}</li>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6"">
+                                <li class="list-group-item"><i class="fas fa-info-circle"></i><span> Information:</span>  {{ x.dept_info }}</li>
+                            </div>
+                        </div>
+                        </ul>
+                    </div>
+                
+                
+
+                {% endfor %}
+
+                {% else %}
+
+                <div class="row mb-5">
+                    <div class="col-sm-4 col-md-4">
+                            <div class="box"> 
+                        <a href="{{ url_for('get_departments', user_id=user_id)}}">
+                            <img class="card-img-top" src="{{url_for('static', filename='images/CoolClips_vc062037.png')}}"
+                                alt="Choose your department">
+                        </a>
+                    </div>
+                    </div>
+                    <div class="col-auto col-md-8">
+                        <ul class=" list-group">
+                        <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                            <li class="list-group-item"><i class="far fa-address-book prefix"></i> Department: Favourite
+                                Department</li>
+                            </div>
+
+                                <div class="col-auto">
+                            <li class="list-group-item"><i class="far fa-user-circle"></i> Created by: {{ session.user }}</li>
+                        </div> 
+                            
+                        </div>    
+                        <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                            <li class="list-group-item"><i class="far fa-building prefix"></i> Facility: Site Name</li>
+                        </div>  
+
+                        
+                                <div class="col-auto">
+                            <li class="list-group-item"><i class="fas fa-mobile-alt"></i> Contact: Main Contact number</li>
+                        </div> 
+
+                        </div>         
+                        </ul>
+                    </div>
+                </div>
+
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <b>My Contact Details:</b>
+                        </div>
+                        <i class="fas fa-mobile-alt"></i>
+                        <label for="phone">Contact: </label>
+                        {% if login_user.user_contact is defined %}
+                        <input id="phone" name="phone" type="tel" value="{{ login_user.user_contact[0:][0].phone }}"
+                            placeholder="Eg. (012) 000-0000" class="form-control" data-mask="(000) 000-0000" required />
+                            {% else %}
+                            <input id="phone" name="phone" type="tel" value=""
+                            placeholder="Eg. (012) 000-000" class="form-control" data-mask="(000) 000-0000" required />
+                            {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <i class="far fa-envelope"></i>
+                        <label for="email">E-mail: </label>
+                        {% if login_user.user_contact is defined %}
+                        <input id="email" name="email" type="email" value="{{ login_user.user_contact[0:][0].email }}"
+                            placeholder="Enter your email address" class="form-control" value="" required />
+                            {% else %}
+                            <input id="email" name="email" type="email" value=""
+                            placeholder="Enter your email address" class="form-control" required />
+                            {% endif %}
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <b>Select Facility then Department:</b>
+                        </div>
+                        <i class="far fa-building prefix"></i>
+                        <label for="location">Facility: </label>
+                        <select id="facility" name="site_name" class="form-control">
+                            <option value="" disabled selected>Select Your Facility</option>
+                            {% for site in facility %}
+                            {% if site.site_name == login_user.site_name %}
+                            <option class="form-control" name="site_name" id="{{ site.site_name }}" value="{{ site.site_name }}"
+                                selected>{{ site.site_name }}</option>
+                            {% else %}
+                            <option class="form-control" name="site_name" id="{{ site.site_name }}" value="{{ site.site_name }}">
+                                {{ site.site_name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <i class="far fa-address-book prefix"></i>
+                        <label for="dept_name">Department: </label>
+                        <select name="dept_name" class="form-control">
+                            <option value="" disabled selected>Choose a department</option>
+                            {% for dept in departments %}
+                            {% if dept.dept_name == login_user.dept_name %}
+                            <option class="form-control" name="dept_name" id="{{ dept.dept_name }}" value="{{ dept.dept_name }}"
+                                selected>{{
+                                dept.dept_name }}</option>
+                            {% else %}
+                            <option class="form-control" name="dept_name" id="{{ dept.dept_name }}" value="{{ dept.dept_name }}">{{
+                                dept.dept_name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="" col-sm-12">
+                    <p>Date profile was crated: {{ login_user.created }}</p>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-sm-12 text-right">
+                    <a href="{{url_for('get_appointment')}}" class="btn btn-dark btn-fixed btn-md mx-3">Cancel</a>
+                    <button class="btn btn-success btn-md" type="submit" name="action">Save
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
+
+
+
+{% endblock content %}
